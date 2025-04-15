@@ -30,3 +30,9 @@ export const geminiRun =async (input)=> {
     const result = await chatSession.sendMessage(input);
     return result.response.text();
 }
+
+export const getTitle = async (query,response) =>{
+  let input = `Give a single best title for this conversation in one sentence. User: ${query} Gemini: ${response} Title:`;
+  const result = await geminiRun(input);
+  return result.replaceAll("*","");
+}

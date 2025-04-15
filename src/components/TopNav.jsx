@@ -6,7 +6,7 @@ const TopNav = ({date, chatHeading}) => {
     const { currentUser } = UseAuthContext();
     const navigate = useNavigate();
   return (
-    <nav className="sticky top-0 w-full h-2 p-4 border border-input-dark bg-[#171717] text-white flex justify-around items-center ">
+    <nav className="sticky top-0 w-full h-2 p-4 shadow shadow-gray-100  bg-[#171717] text-white flex justify-around items-center z-10">
       <div className="hidden lg:flex items-center gap-2">
         <div >{currentUser.email.split("@")[0]}</div>
         <div className="flex items-center text-light-gray">

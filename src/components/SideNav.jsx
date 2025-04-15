@@ -34,8 +34,8 @@ const SideNav = () => {
         {isOpen && (
           <div className="w-full mt-9  text-white">
             {allQuery?.map((chat) => (
-              <div key={chat.id} className="w-full my-2" onClick={()=> setActiveChatId(chat.id)}>
-                {chat.query}
+              <div key={chat.id} className="w-full my-2  overflow-ellipsis" onClick={()=> setActiveChatId(chat.id)}>
+                {chat.title.length > 30 ? chat.title.slice(0, 30) + "..." : chat.title}
               </div>
             ))}
           </div>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import SideNav from "../components/SideNav";
 import { CircleFadingArrowUp } from "lucide-react";
-import { geminiRun } from "../gemini";
+import { geminiRun, getTitle } from "../gemini";
 
 import { useUserChatContext } from "../util/context/userChatContext";
 import Chat from "../components/Chat";
@@ -20,9 +20,10 @@ const NewChat = () => {
     if (currentQuery.trim() === "") return;
 
     const result = await geminiRun(currentQuery);
-    console.log(result);
+    
     setCurrentResult(result);
-    const newChat = { id: Date.now(), dateCreated: formateDate, query: currentQuery, response: result };
+    const chatTitle = await getTitle(currentQuery, result);
+    const newChat = { id: Date.now(), dateCreated: formateDate, title: chatTitle,query: currentQuery, response: result };
     setAllQuery((prev) => [...prev, newChat]);
     setCurrentQuery("");
     setActiveChatId(newChat.id);
@@ -37,7 +38,7 @@ const NewChat = () => {
       <SideNav/>
       {/* Chat area */}
       <div className="flex flex-1 flex-col  overflow-hidden">
-        {activeChat && <TopNav date={activeChat.dateCreated} chatHeading={activeChat.query}/>}
+        {activeChat && <TopNav date={activeChat.dateCreated} chatHeading={activeChat.title}/>}
       <div className="flex h-full  flex-col items-center justify-center text-white">
         {activeChat ? (
           <div className="w-full h-full overflow-y-scroll mb-16">
@@ -48,16 +49,16 @@ const NewChat = () => {
             What can I help you with?
           </h2>
         )}
-        <div className="sticky bottom-3.5 w-full lg:w-[860px]  p-2 rounded-xl flex border border-gray-border bg-gray-btn shadow-lg">
-            <input
+        <div className="sticky bottom-3.5 w-full  lg:w-[860px]  p-2 rounded-xl flex border border-gray-border bg-gray-btn shadow-lg">
+            <textarea
               name="currentQuery"
               value={currentQuery}
               onChange={(e) => setCurrentQuery(e.target.value)}
               placeholder="Ask your doubt..."
-              className="p-4 w-full focus:outline-none focus:ring-2 focus:ring-primary rounded-l-xl bg-gray-btn text-sm sm:text-base"
-            />
+              className="p-4 w-full field-sizing-content max-h-[200px] overflow-y-auto resize-none focus:outline-none focus:ring-2 focus:ring-primary rounded-l-xl bg-gray-btn text-sm sm:text-base"
+            ></textarea>
             <button
-              className="flex items-center justify-center p-2 bg-primary hover:bg-primary-dark rounded-r-xl"
+              className="flex items-end justify-center p-2 bg-primary hover:bg-primary-dark rounded-r-xl"
               onClick={submitInput}
             >
               <CircleFadingArrowUp size={30} className="text-white" />
