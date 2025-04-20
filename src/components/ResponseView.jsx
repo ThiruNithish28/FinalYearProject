@@ -1,12 +1,6 @@
 import { useEffect } from "react";
-import { marked } from "marked";
-import Accordian from "./Accordian";
 
-
-
-const Chat = ({ query, response, youtube_Resource }) => {
-  const renderedResponse = marked(response); // make the response as html
-
+const ResponseView = ({ renderedResponse }) => {
   useEffect(() => {
     const codeBlocks = document.querySelectorAll("pre"); // select all the code blocks
     codeBlocks.forEach((block) => {
@@ -32,26 +26,10 @@ const Chat = ({ query, response, youtube_Resource }) => {
   }, [renderedResponse]);
 
   return (
-    <>
-      <div className="h-full  flex  flex-col  items-center  py-4 lg:py-8  text-white">
-        {/* user query  */}
-        <div className="w-[350px] break-words whitespace-pre-wrap bg-gray-btn self-end text-xl font-semibold rounded-xl mr-8 px-4 py-2.5">
-          {query}
-        </div>
-        {/* response  */}
-        <div
-          dangerouslySetInnerHTML={{ __html: renderedResponse }}
-          className="w-full h-full lg:w-[860px] py-4 pl-8 pr-4 rounded-xl whitespace-pre-wrap prose prose-invert max-w-none [&_pre]:overflow-x-auto [&_pre]:p-4 [&_pre]:rounded-lg  [&_code]:text-sm [&_code]:block"
-        ></div>
-      </div>
-      {/* resoucre */}
-
-      <aside className="w-[300px] h-full">
-      <Accordian icon="youtube" title="videos" elements={youtube_Resource}/>
-      </aside>
-    </>
+    <div
+      dangerouslySetInnerHTML={{ __html: renderedResponse }}
+      className="w-[100vw] h-full lg:w-[860px] lg:p-4 p-5 rounded-xl whitespace-pre-wrap prose prose-invert max-w-none [&_pre]:overflow-x-auto [&_pre]:p-4 [&_pre]:rounded-lg  [&_code]:text-sm [&_code]:block"
+    ></div>
   );
 };
-export default Chat;
-
-
+export default ResponseView;

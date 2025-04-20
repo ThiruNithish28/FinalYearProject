@@ -36,3 +36,19 @@ export const getTitle = async (query,response) =>{
   const result = await geminiRun(input);
   return result.replaceAll("*","");
 }
+
+export const getKeyWordExtract = async (query,response) =>{ 
+  const prompt = `
+  Extract 1 short, specific search query to find a good tutorial on YouTube for the user's question.
+  
+  Conversation:
+  User: ${query}
+  Gemini: ${response}
+  
+  Only output the search query (no explanation). Example format: "Fibonacci sequence in Java"
+  Search Query:
+  `;
+  
+  const result = await geminiRun(prompt);
+  return result.replaceAll("*","");
+}

@@ -1,17 +1,19 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-import { auth } from "../fireBase";
+import { auth } from "../util/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { UseAuthContext } from "../util/context/AuthContext";
+import { UseAuthContext } from "../context/AuthContext";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { Eye, EyeClosed } from "lucide-react";
+import SocialLoginButton from "../components/SocialLoginButton";
+import Seperator from "../components/Seperator";
+import LoginInteractiveHeader from "../components/LoginInteractiveHeader";
 
 const LogUp = () => {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -19,8 +21,8 @@ const LogUp = () => {
   const [isTyping, setIsTyping] = useState(false); // to check that user is start type (password) if they start theeen only show the password rules
   const [loading, setLoading] = useState(false); // which will prevent the multiple click in the form submit btn (Login btn) [by using disable attribute in the btn ]
 
-  const {signInWithGoogle, signInWithGitHub} = UseAuthContext();
-  
+  const { signInWithGoogle, signInWithGitHub } = UseAuthContext();
+
   const navigate = useNavigate();
 
   const [errors, setErrors] = useState({
@@ -98,27 +100,9 @@ const LogUp = () => {
     setLoading(false); // after complete we have to make back the btn to work
   };
 
-  const handleGoogleSignIn = async () => {
-    try{
-      await signInWithGoogle();
-      navigate("/new-chat");
-    }catch(error){
-      toast.error("Google signin failed " + error.message);
-    }
-  }
-
-  const handleGitHubSignIn =async()=>{
-    try{
-      await signInWithGitHub();
-      navigate("/new-chat");
-    }catch(error){
-      toast.error("Github signin failed " + error.message);
-    }
-  }
-
   return (
     <div className="bg-[#171717] w-full ">
-      <nav className="flex justify-between w-ful p-4 mb-1 ">
+      <nav className="flex justify-between w-ful px-4 py-2 mb-1 ">
         <h1 className="font-extrabold text-sky-700 text-2xl ">
           CodeMastery Hub
         </h1>
@@ -130,44 +114,10 @@ const LogUp = () => {
       <div className="flex h-screen items-start justify-center">
         {/* logup container */}
         <div className="flex flex-col items-center justify-center text-white  w-[330px] sm:w-[384px]  ">
-          {/* header section */}
-          <div className="w-full mb-10">
-            <h1 className="font-bold capitalize text-2xl  mt-8 mb-2 ">
-              Get started
-            </h1>
-            <p className="text-light-gray">Create a new account</p>
-          </div>
-
-          {/* Additional Login options  */}
-          <div className="flex flex-col gap-5  w-full">
-            <button className="px-4 py-2 h-[42px] font-bold  flex justify-center items-center bg-gray-btn rounded-md border border-gray-border hover:cursor-pointer"
-            onClick={handleGoogleSignIn}>
-              <div>
-                <img
-                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/google/google-original.svg"
-                  className="w-5 mr-2"
-                />
-              </div>
-              <span>Continue with Google</span>
-            </button>
-
-            <button className="px-4 py-2  font-bold  flex justify-center items-center rounded-md border border-gray-border hover:cursor-pointer"
-            onClick={handleGitHubSignIn}>
-              <div>
-                <i className="devicon-github-original text-2xl mr-2"></i>
-              </div>
-              <span>Continue with GitHub</span>
-            </button>
-          </div>
-
-          {/* seperator  */}
-          <div class="w-full flex items-center my-5">
-            <div class="flex-1 h-px bg-gray-border"></div>
-            <span class="px-3  text-white text-sm">or</span>
-            <div class="flex-1 h-px bg-gray-border"></div>
-          </div>
-
-          {/* Login Form  */}
+          <LoginInteractiveHeader />
+          <SocialLoginButton />
+          <Seperator />
+          {/* Logup Form  */}
           <form onSubmit={handleSubmit} className="w-full">
             <div className="w-full mb-4">
               <p className="text-light-gray capitalize mb-2">Email</p>
@@ -178,7 +128,9 @@ const LogUp = () => {
                 id="email"
                 placeholder="you@example.com"
                 onChange={(e) => setEmail(e.target.value)}
-                className={`${errors.email ? " border-red-500 ":"border-gray-border "}px-4 py-3 w-full border bg-input-dark rounded-md  outline-none  placeholder:text-gray-border`}
+                className={`${
+                  errors.email ? " border-red-500 " : "border-gray-border "
+                }px-4 py-3 w-full border bg-input-dark rounded-md  outline-none  placeholder:text-gray-border`}
               />
               {errors.email && (
                 <p className="text-red-500 text-sm">{errors.email}</p>
@@ -187,7 +139,11 @@ const LogUp = () => {
 
             <div className="w-full mb-4">
               <p className="text-light-gray capitalize mb-2 ">password</p>
-              <div className={`${errors.password  ? " border-red-500 " : "border-gray-border "}px-2  flex items-center w-full border bg-input-dark    rounded-md shadow-sm `}>
+              <div
+                className={`${
+                  errors.password ? " border-red-500 " : "border-gray-border "
+                }px-2  flex items-center w-full border bg-input-dark    rounded-md shadow-sm `}
+              >
                 <input
                   type={passwordVisible ? "text" : "password"}
                   name="password"
@@ -264,7 +220,7 @@ const LogUp = () => {
             </button>
 
             <div>
-              <p className="text-light-gray w-full text-center">
+              <p className="text-light-gray w-full text-center mb-1.5">
                 Have an account?{" "}
                 <Link to="/" className="text-white underline">
                   Log In Now

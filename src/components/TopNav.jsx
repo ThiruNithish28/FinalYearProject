@@ -1,12 +1,11 @@
-
-import { UseAuthContext } from "../util/context/AuthContext";
+import { UseAuthContext } from "../context/AuthContext";
 import { Clock, PenBoxIcon } from "lucide-react";
 import {  useNavigate } from "react-router-dom";
 const TopNav = ({date, chatHeading}) => {
     const { currentUser } = UseAuthContext();
     const navigate = useNavigate();
   return (
-    <nav className="sticky top-0 w-full h-2 p-4 shadow shadow-gray-100  bg-[#171717] text-white flex justify-around items-center z-10">
+    <nav className="sticky top-0 w-full h-2 px-4 py-6 border-b border-gray-border bg-[#171717] text-white flex justify-between items-center z-10">
       <div className="hidden lg:flex items-center gap-2">
         <div >{currentUser.email.split("@")[0]}</div>
         <div className="flex items-center text-light-gray">
@@ -19,7 +18,7 @@ const TopNav = ({date, chatHeading}) => {
       </button>
 
       <div>
-        {chatHeading}
+        {chatHeading.length > 50 ? chatHeading.slice(0, 50) + "..." : chatHeading}
       </div>
 
       <div>

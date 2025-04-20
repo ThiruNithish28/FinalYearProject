@@ -8,7 +8,7 @@ import {
   signInWithPopup,
   GithubAuthProvider,
 } from "firebase/auth";
-import { auth } from "../../fireBase";
+import { auth } from "../util/firebase"; 
 
 const AuthContext = createContext(); // create the contex
 

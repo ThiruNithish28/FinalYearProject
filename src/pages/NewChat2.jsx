@@ -1,19 +1,22 @@
 import { useState } from "react";
-import SideNav from "../components/SideNav";
 import { CircleFadingArrowUp } from "lucide-react";
 import { geminiRun, getKeyWordExtract, getTitle } from "../util/gemini";
 
+import {supabase} from "../util/supabaseClient";
 import { useUserChatContext } from "../context/userChatContext";
-import Chat from "../components/Chat";
-import Accordian from "../components/Accordian"
+import { UseAuthContext } from "../context/AuthContext";
+
+import SideNav from "../components/SideNav";
+import ChatGrid from "../components/ChatGrid";
 import TopNav from "../components/TopNav";
 import { youtube_Search } from "../util/youtube";
 
-const NewChat = () => {
+const NewChat2 = () => {
   const [currentQuery, setCurrentQuery] = useState("");
 
   const { allQuery, setAllQuery, activeChatId, setActiveChatId } =
     useUserChatContext();
+  const { currentUser } = UseAuthContext(); // get the current user from context
 
   // for get the date that chat created
   let formateDate = new Date().toLocaleString("us-en", {
@@ -33,40 +36,48 @@ const NewChat = () => {
     ]);
     const resource = await youtube_Search(keyword);
     console.log("keyword", keyword);
+
     const newChat = {
-      id: Date.now(),
-      dateCreated: formateDate,
+      chat_id: Date.now(),
+      date_created: formateDate,
       title: chatTitle,
       query: currentQuery,
       response: result,
-      resource: resource,
+      resources: resource,
     };
+    //save to Supabase DB
+    const {error} = await supabase.from("user_chats").insert([{...newChat,uid: currentUser.uid}]);
+    if(error) {
+      console.error("Error inserting data:", error.message);
+    }
+
+    //save to context API
     setAllQuery((prev) => [...prev, newChat]);
     setCurrentQuery("");
-    setActiveChatId(newChat.id);
+    setActiveChatId(newChat.chat_id);
   };
-
-  const activeChat = allQuery.find((chat) => chat.id === activeChatId); // for which chat to display
+  
+  const activeChat = allQuery.find((chat) => chat.chat_id === activeChatId); // for which chat to display
 
   return (
-    <div className="flex flex-col lg:flex-row bg-[#171717] h-screen ">
+    <div className="flex flex-col lg:flex-row bg-[#171717] h-dvh ">
       {/* Sidebar for larger screens */}
       <SideNav />
       {/* Chat area */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {activeChat && (
           <TopNav
-            date={activeChat.dateCreated}
+            date={activeChat.date_created}
             chatHeading={activeChat.title}
           />
         )}
         <div className="flex h-full  flex-col items-center justify-center text-white">
           {activeChat ? (
-            <div className="w-full h-full flex overflow-y-scroll mb-16">
-              <Chat
+            <div className="w-full h-full flex justify-center overflow-y-scroll mb-16">
+              <ChatGrid
                 query={activeChat.query}
                 response={activeChat.response}
-                youtube_Resource={activeChat.resource}
+                youtube_Resource={activeChat.resources}
               />
               
               
@@ -98,5 +109,5 @@ const NewChat = () => {
   );
 };
 
-export default NewChat;
-// This is the NewChat page where the user can ask a question to the chatbot. The user can type their query in the input field and click on the send button to send the query to the chatbot. The query is stored in the state using the useState hook. The SideNav component is used to display the sidebar for larger screens. The CircleFadingArrowUp icon is used to represent the send button. The input field is styled using tailwindcss classes to provide a clean and modern look. The NewChat page is responsive and works well on different screen sizes.// Path: src/pages/NewChat.jsx
+export default NewChat2;
+

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Nav from "../components/Nav";
 import { Link } from "react-router-dom";
-import { auth } from "../fireBase";
+import { auth } from "../util/firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 
