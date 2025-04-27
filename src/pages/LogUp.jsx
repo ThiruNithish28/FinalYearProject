@@ -93,7 +93,7 @@ const LogUp = () => {
       setLoading(true); // now user can able to click the btn again once we make false (by this we can restric multiple click in sign up btn)
       await createUserWithEmailAndPassword(auth, email, password);
       toast.success("Log in SucessFull");
-      navigate("/new-chat");
+      navigate("/new-chat2");
     } catch (error) {
       toast.error(error.message);
     }

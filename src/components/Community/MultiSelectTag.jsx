@@ -2,12 +2,11 @@ import { Tag } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import TagPills from "./TagPills";
 
-const MultiSelectTag = () => {
+const MultiSelectTag = ({selectedTag, setSelectedTag, activeTab}) => {
   const [tags, setTags] = useState([]);
   const [tagEntered, setTagEntered] = useState("");
-  const [selectedTag, setSelectedTag] = useState([]);
   const [selectedTagSet, setSelectedTagSet] = useState(new Set());
-  const [IsSugesstionVisible, setIsSugesstionVisible] = useState(false);
+  const [isFocus, setIsFocus] = useState(false);
 
   const inputRef = useRef(null);
 
@@ -40,6 +39,15 @@ const MultiSelectTag = () => {
     inputRef.current.focus();
   };
 
+  const handleDeleteTag = (tag) => {
+    if (selectedTag.length <= 0) return;
+    const newTags = selectedTag.filter((t) => t !== tag);
+    setSelectedTag(newTags);
+    setSelectedTagSet(new Set(newTags));
+    setTagEntered("");
+    inputRef.current.focus();
+  };
+
   const handlekeyDown = (e) => {
     if (e.key === "Enter" && tagEntered) {
       e.preventDefault();
@@ -59,25 +67,28 @@ const MultiSelectTag = () => {
       <div className="flex flex-wrap items-center gap-2 mb-2">
         {/* tag pills  */}
         {selectedTag.length > 0 &&
-          selectedTag.map((tag, index) => <TagPills key={index} text={tag} />)}
-        <div>
+          selectedTag.map((tag, index) => <TagPills key={index} text={tag} onClick={handleDeleteTag}  />)}
+        
+        { activeTab== "edit" && <div>
           <input
             type="text"
             name="tag"
             id="tag"
             value={tagEntered}
-            onChange={(e) => setTagEntered(e.target.value)}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setTimeout(() => setIsFocus(false), 1000)}
+            onChange={(e) =>{ setTagEntered(e.target.value);setIsFocus(true);}}
             onKeyDown={handlekeyDown}
             ref={inputRef}
             autoComplete="off"
             placeholder="Add up to 4 tags..."
             className="focus:outline-none"
           />
-        </div>
+        </div>}
       </div>
 
       {/* suggested tag */}
-      {suggestedTags.length > 0 && (
+      {isFocus && suggestedTags.length > 0 && (
         <ul className="max-h-32 px-3 py-1 shadow-lg overflow-y-scroll gap-2 mt-2">
             <p className="pb-3 border-b border-gray-border">Top Tags</p>
           {suggestedTags.map((tag, index) => {

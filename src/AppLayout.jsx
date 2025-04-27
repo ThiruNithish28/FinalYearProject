@@ -5,11 +5,12 @@ import LogUp from "./pages/LogUp";
 import NewChat from "./pages/NewChat";
 import NewChat2 from "./pages/NewChat2";
 import UserProfile from "./pages/UserProfile";
-import PrivateRoute from "../PrivateRoute";
 import ForgotPassword from "./pages/ForgotPassword";
+import Community from "./pages/Community";
+import CreatePost from "./pages/CreatePost";
+import PrivateRoute from "../PrivateRoute";
 import { AuthProvider } from "./context/AuthContext";
 import { UserChatProvider } from "./context/userChatContext";
-import CreatePost from "./pages/CreatePost";
 
 const AppLayout = () => {
   return (
@@ -45,11 +46,17 @@ const AppLayout = () => {
               }
             />
             <Route
+              path="/community"
+              element={
+                <Community/>
+              }
+            />
+            <Route
               path="/community/create-post"
               element={
-                <PrivateRoute>
+               
                   <CreatePost />
-                </PrivateRoute>
+                
               }
             />
           </Routes>

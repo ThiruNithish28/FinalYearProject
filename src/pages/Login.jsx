@@ -42,7 +42,7 @@ const Login = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast.success("Log in SucessFull");
-      navigate("/new-chat");
+      navigate("/new-chat2");
     } catch (error) {
       toast.error(error.message);
     }
