@@ -1,8 +1,8 @@
 import React from "react";
 
-export default function TabSwitcher({ tabs, activeTab, onTabChange }) {
+export default function TabSwitcher({ tabs, activeTab, onTabChange, isCommunityPage }) {
   return (
-    <div className="sticky top-0 z-30 flex gap-2 font-semibold text-[14px] mt-4 mb-2 bg-[#171717] border-b border-b-gray-border w-full lg:w-[860px] ">
+    <div className={`sticky top-0 z-30 flex gap-2 font-semibold text-[14px] mt-4 mb-2 bg-[#171717] border-b border-b-gray-border w-full ${isCommunityPage ? "lg:w-full" : "lg:w-[860px]"} `}>
       {tabs.map((tab) => (
         <p
           onClick={() => onTabChange(tab.id)}

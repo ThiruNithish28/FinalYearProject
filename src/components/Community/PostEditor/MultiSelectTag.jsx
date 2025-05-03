@@ -67,7 +67,7 @@ const MultiSelectTag = ({selectedTag, setSelectedTag, activeTab}) => {
       <div className="flex flex-wrap items-center gap-2 mb-2">
         {/* tag pills  */}
         {selectedTag.length > 0 &&
-          selectedTag.map((tag, index) => <TagPills key={index} text={tag} onClick={handleDeleteTag}  />)}
+          selectedTag.map((tag, index) => <TagPills key={index} text={tag} onClick={handleDeleteTag} activeTab={activeTab} />)}
         
         { activeTab== "edit" && <div>
           <input

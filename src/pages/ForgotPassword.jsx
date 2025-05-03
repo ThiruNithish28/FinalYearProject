@@ -1,8 +1,7 @@
 import { useState } from "react";
 import Nav from "../components/Nav";
 import { Link } from "react-router-dom";
-import { auth } from "../util/firebase";
-import { sendPasswordResetEmail } from "firebase/auth";
+
 import { ToastContainer, toast } from "react-toastify";
 
 const ForgotPassword = () => {
@@ -19,7 +18,7 @@ const ForgotPassword = () => {
 
     try {
       setLoading(true); // for disable the btn
-      await sendPasswordResetEmail(auth, email);
+      // await sendPasswordResetEmail(auth, email);
       toast.success("Reset email sent! Check your inbox.");
     } catch (err) {
       console.log("Error : ", err.message);

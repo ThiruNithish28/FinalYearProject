@@ -8,7 +8,7 @@ import rehypeHighlight from 'rehype-highlight';
 
 const MarkdownPreview = ({content}) => {
   return (
-    <div className="prose prose-headings:text-white prose-sm md:prose-base lg:prose-lg dark:prose-invert max-w-none text-white lg:px-16 md:px-12 rounded-md">
+    <div className="prose prose-headings:text-white prose-sm md:prose-base lg:prose-lg dark:prose-invert max-w-none text-white lg:px-16 md:px-12 rounded-md ">
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeRaw, rehypeSanitize, rehypeHighlight]}

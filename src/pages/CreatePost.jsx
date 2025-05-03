@@ -1,42 +1,75 @@
 import React, { useState } from "react";
-import CreatePostForm2 from "../components/Community/CreatePostForm2";
-import CreatePostTopNav from "../components/Community/CreatePostTopNav";
-import ActionButtons from "../components/Community/ActionButton";
+import CreatePostForm2 from "../components/Community/PostEditor/CreatePostForm2";
+import CreatePostTopNav from "../components/Community/PostEditor/CreatePostTopNav";
+import ActionButtons from "../components/Community/PostEditor/ActionButton";
 import { ToastContainer, toast } from "react-toastify";
-import Guidence from "../components/Community/Guidence";
+import Guidence from "../components/Community/PostEditor/Guidence";
+import { supabase } from "../util/supabaseClient";
+import { useAuthContext } from "../context/AuthContext";
+import { useCommunityContext } from "../context/CommunityContext";
 
 const CreatePost = () => {
+  // getting data from context
+  const userId = useAuthContext().user.id;
+  const { selectedCommunity, setSelectedCommunity, userFollowCommunity } = useCommunityContext();
+
+  // state for the post form
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [activeTab, setActiveTab] = useState("edit");
   const [tags, setTags] = useState([]);
+  const [chosenCommunity, setChosenCommunity] = useState(selectedCommunity ||null);
   const [originalPost, setOriginalPost] = useState(null);
   const [saveStatus, setSaveStatus] = useState("saved");
 
+  // state for the action buttons
   const [isTitleGuidence, setIsTitleGuidence] = useState(false);
   const [isContentGuidence, setIsContentGuidence] = useState(false);
   const [isActionBtnGuidence, setIsActionBtnGuidence] = useState(true);
+
   
-  const handlePublish = () => {
-    if(title===""){
+
+  const handlePublish = async () => {
+    if (title === "") {
       toast.error("please enter title before publish.");
-      return ;
-    }else if(content === ""){
+      return;
+    } else if (content === "") {
       toast.error("please enter content before publish.");
-      return ;
+      return;
     }
-    alert(`Published post: ${title}`);
-    toast.promise()
-    // In a real app, this would send the post to an API
+    setOriginalPost({ title, content, tags, published: false });
+    const { error } = await supabase.from("posts").insert([
+      {
+        title: title,
+        content: content,
+        tags: tags,
+        created_at: new Date(),
+        user_id: userId,
+        community_id: chosenCommunity.id,
+        post_type:"article",
+      },
+    ]);
+    if (error) {
+      toast.error("Error publishing post", error);
+      console.error("Error publishing post:", error.message);
+    } else {
+      toast.success(`Published post: ${title}`);
+    }
+    // Reset the form after publishing
+    setTitle("");
+    setContent("");
+    setTags([]);
+    setActiveTab("edit");
+    setOriginalPost(null);
   };
   const handleSaveDraft = () => {
     console.log("handleSave draft");
-    if(title===""){
+    if (title === "") {
       toast.error("please enter title before save draft.");
-      return ;
-    }else if(content === ""){
+      return;
+    } else if (content === "") {
       toast.error("please enter content before save draft.");
-      return ;
+      return;
     }
 
     toast.info("Draft saving...");
@@ -66,8 +99,8 @@ const CreatePost = () => {
       tags.length !== originalPost?.tags.length);
 
   return (
-    <div className="bg-[#000000] relative text-gray-text-60  flex flex-col justify-center h-dvh overflow-hidden">
-      <ToastContainer position="top-right" autoClose={3000} theme="dark"/>
+    <div className="bg-[#000000] relative text-gray-text-60  flex flex-col justify-center h-full ">
+      <ToastContainer position="top-right" autoClose={3000} theme="dark" />
 
       {/* <TopNav /> */}
       <CreatePostTopNav activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -94,15 +127,18 @@ const CreatePost = () => {
         hasChanges={Boolean(hasChanges)}
       />
 
-      <div className={`hidden md:block lg:block absolute right-0 lg:right-10 w-[30dvw] ${isTitleGuidence ? "top-16" : "bottom-32" }`}>
-      <Guidence
-        isActionBtnGuidence={isActionBtnGuidence}
-        isContentGuidence={isContentGuidence}
-        isTitleGuidence={isTitleGuidence}
-        activeTab={activeTab}
-      />
+      <div
+        className={`hidden md:block lg:block absolute right-0 lg:right-10 w-[30dvw] ${
+          isTitleGuidence ? "top-16" : "bottom-32"
+        }`}
+      >
+        <Guidence
+          isActionBtnGuidence={isActionBtnGuidence}
+          isContentGuidence={isContentGuidence}
+          isTitleGuidence={isTitleGuidence}
+          activeTab={activeTab}
+        />
       </div>
-      
     </div>
   );
 };

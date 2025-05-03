@@ -1,16 +1,18 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 const CreatePostTopNav = ({ activeTab,setActiveTab }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || '/community'; // default to /community if from is not defined
 
   const handleClsoe = () =>{
-    navigate('/community');
+    navigate(from); // navigate to the previous page
   }
 
   return (
-    <nav className="sticky top-0 w-full h-2 px-9 py-6 border-b border-gray-border  text-white flex justify-between items-center z-10">
+    <nav className="sticky top-0 w-full h-20 px-9 py-6 border-b border-gray-border bg-[#000000] text-white flex justify-between items-center z-50">
       <div className="flex items-center justify-between gap-4 lg:w-[62dvw] md:w-[65dvw] w-full">
         <div>
           <h1 className="hidden lg:block text-2xl font-bold">
@@ -40,12 +42,12 @@ const CreatePostTopNav = ({ activeTab,setActiveTab }) => {
           >
             preview
           </button>
-          <button className="lg:hidden hover:cursor-pointer " id="close-btn" onClick={()=> navigate('/community')}>
-            &#10006;
+          <button className="lg:hidden hover:cursor-pointer " id="close-btn" onClick={()=> handleClsoe()} > 
+              &#10006;
           </button>
         </div>
       </div>
-      <button className="hidden  hover:cursor-pointer lg:block" id="close-btn"  onClick={()=> navigate('/community')}>
+      <button className="hidden  hover:cursor-pointer lg:block" id="close-btn"  onClick={()=> handleClsoe()}>
         &#10006;
       </button>
     </nav>

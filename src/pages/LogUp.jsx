@@ -1,9 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-import { auth } from "../util/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { UseAuthContext } from "../context/AuthContext";
+import { useAuthContext } from "../context/AuthContext";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -21,7 +19,7 @@ const LogUp = () => {
   const [isTyping, setIsTyping] = useState(false); // to check that user is start type (password) if they start theeen only show the password rules
   const [loading, setLoading] = useState(false); // which will prevent the multiple click in the form submit btn (Login btn) [by using disable attribute in the btn ]
 
-  const { signInWithGoogle, signInWithGitHub } = UseAuthContext();
+  const { signUpWithEmail } = useAuthContext();
 
   const navigate = useNavigate();
 
@@ -90,14 +88,15 @@ const LogUp = () => {
       return;
     }
     try {
-      setLoading(true); // now user can able to click the btn again once we make false (by this we can restric multiple click in sign up btn)
-      await createUserWithEmailAndPassword(auth, email, password);
-      toast.success("Log in SucessFull");
-      navigate("/new-chat2");
+      setLoading(true);
+      await signUpWithEmail(email, password);
+      toast.info("Please verify your email. Once verified, you can log in and access the chat.");
+      
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message || "An unexpected error occurred.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false); // after complete we have to make back the btn to work
   };
 
   return (

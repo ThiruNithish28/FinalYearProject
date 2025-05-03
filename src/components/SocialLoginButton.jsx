@@ -1,14 +1,14 @@
-import { UseAuthContext } from "../context/AuthContext";
+import { toast } from "react-toastify";
+import { useAuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 
 const SocialLoginButton = () => {
-  const { signInWithGoogle, signInWithGitHub } = UseAuthContext();
+  const { signInWithGoogle, signInWithGithub } = useAuthContext();
   const navigate = useNavigate();
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = () => {
     try {
-      await signInWithGoogle();
-      navigate("/new-chat");
+      signInWithGoogle();
     } catch (error) {
       toast.error(error.message);
     }
@@ -16,8 +16,7 @@ const SocialLoginButton = () => {
 
   const handleGitHubSignIn = async () => {
     try {
-      await signInWithGitHub();
-      navigate("/new-chat");
+      await signInWithGithub();
     } catch (error) {
       toast.error("Github signin failed " + error.message);
     }

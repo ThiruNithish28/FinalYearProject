@@ -1,10 +1,14 @@
-import { UseAuthContext } from "../context/AuthContext";
+import { useAuthContext } from "../context/AuthContext";
 
 const UserProfile = () => {
-    const {currentUser} = UseAuthContext();
+    const {user} = useAuthContext();
   return (
     <div>
-      <p>hey{currentUser && "currnet : " + currentUser.email + " Uid : " +currentUser.uid}</p>
+      <p>hey{user && "currnet : " + user.email + " Uid : " +user.uid}</p>
+      <p></p>
+      <div className="flex flex-col gap-4">
+        <p></p>
+      </div>
     </div>
   );
 };

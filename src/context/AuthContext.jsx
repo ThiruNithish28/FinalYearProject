@@ -1,71 +1,122 @@
-// Context API for store the user crenditials
-
 import { createContext, useContext, useEffect, useState } from "react";
-import {
-  onAuthStateChanged,
-  signOut,
-  GoogleAuthProvider,
-  signInWithPopup,
-  GithubAuthProvider,
-} from "firebase/auth";
-import { auth } from "../util/firebase"; 
+import { supabase } from "../util/supabaseClient";
 
-const AuthContext = createContext(); // create the contex
+const AuthContext = createContext();
 
-//use the context
-export const UseAuthContext = () => useContext(AuthContext);
+export const useAuthContext = () => useContext(AuthContext);
 
-//Make provider
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true); // we have notify that loading before we get the user so that use this
+  const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const getSession = async () => {
+    try {
+      setLoading(true);
+      const { data, error: sessionError } = await supabase.auth.getSession();
+
+      if (sessionError) {
+        console.error("Session fetch error:", sessionError.message);
+        setUser(null);
+        setProfile(null);
+        return;
+      }
+
+      const loggedInUser = data?.session?.user ?? null;
+      setUser(loggedInUser);
+
+      if (loggedInUser) {
+        const { data: profileData, error: profileError } = await supabase
+          .from("public_profiles")
+          .select("*")
+          .eq("id", loggedInUser.id)
+          .single();
+
+        if (profileError) {
+          console.error("Profile fetch error:", profileError.message);
+          setProfile(null);
+        } else {
+          setProfile(profileData);
+        }
+      } else {
+        setProfile(null);
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err.message);
+      setUser(null);
+      setProfile(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-      setLoading(false); // after get make as false , which means we get the user and loading is complete
-    }); // this method returns the method that when we call this method it'll unsubscribe this on off stte changed event
+    getSession();
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(() => {
+      getSession();
+    });
 
-    return unsubscribe; // clean up the listener so we return (Which act like final[clean up the code/ opiration we done])
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  // logOut function
-  const logOut = async () => {
-    try {
-      await signOut(auth);
-      setCurrentUser(null); // clear the current user state
-    } catch (error) {
-      console.error("Sign-Out Error:", error.message);
-      throw error; // trowsa the error for manula handiling where it calls
-    }
+  const signInWithEmail = async (email, password) => {
+    const { user, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) throw error;
+    return user;
   };
 
-  // Google Sign-In function
+  const signUpWithEmail = async (email, password) => {
+    const { user, error } = await supabase.auth.signUp({ email, password });
+
+    if (error) throw error;
+    return user;
+  };
+
   const signInWithGoogle = async () => {
-    const googleProvider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      setCurrentUser(result.user);
-    } catch (error) {
-      console.error("Google Sign-In Error:", error.message);
-      throw error;
-    }
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/new-chat`,
+      },
+    });
+    if (error) console.log(error.message);
   };
 
-  const signInWithGitHub= async()=>{
-    const githubProvider = new GithubAuthProvider();
-    try{
-      const reuslt = await signInWithPopup(auth,githubProvider);
-      setCurrentUser(reuslt.user);
-    }catch(error){
-      console.error("Github Sign-In Error:", error.message);  
-      throw error;
-    }
+  const signInWithGithub = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "github",
+      options: {
+        redirectTo: `${window.location.origin}/new-chat`,
+      },
+    });
+    if (error) throw error;
+  };
+
+  async function signOut() {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
   }
 
+  const value = {
+    user,
+    profile,
+    loading,
+    signInWithEmail,
+    signInWithGoogle,
+    signInWithGithub,
+    signUpWithEmail,
+    signOut,
+  };
   return (
-    <AuthContext.Provider value={{ currentUser, logOut, signInWithGoogle, signInWithGitHub }}>
-      {!loading && children}
+    <AuthContext.Provider value={value}>
+      {children}
     </AuthContext.Provider>
   );
 };

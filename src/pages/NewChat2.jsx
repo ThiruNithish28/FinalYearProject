@@ -4,11 +4,11 @@ import { geminiRun, getKeyWordExtract, getTitle } from "../util/gemini";
 
 import {supabase} from "../util/supabaseClient";
 import { useUserChatContext } from "../context/userChatContext";
-import { UseAuthContext } from "../context/AuthContext";
+import { useAuthContext } from "../context/AuthContext";
 
-import SideNav from "../components/SideNav";
-import ChatGrid from "../components/ChatGrid";
-import TopNav from "../components/TopNav";
+import SideNav from "../components/chat/SideNav";
+import ChatGrid from "../components/chat/ChatGrid";
+import TopNav from "../components/chat/TopNav";
 import { youtube_Search } from "../util/youtube";
 
 const NewChat2 = () => {
@@ -16,7 +16,7 @@ const NewChat2 = () => {
 
   const { allQuery, setAllQuery, activeChatId, setActiveChatId } =
     useUserChatContext();
-  const { currentUser } = UseAuthContext(); // get the current user from context
+  const { user } = useAuthContext(); // get the current user from context
 
   // for get the date that chat created
   let formateDate = new Date().toLocaleString("us-en", {
@@ -46,7 +46,7 @@ const NewChat2 = () => {
       resources: resource,
     };
     //save to Supabase DB
-    const {error} = await supabase.from("user_chats").insert([{...newChat,uid: currentUser.uid}]);
+    const {error} = await supabase.from("user_chats").insert([{...newChat,uid: user.id}]);
     if(error) {
       console.error("Error inserting data:", error.message);
     }

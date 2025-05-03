@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import EditorToolBar from "./EditorToolBar";
-import * as editorUtils from "../../util/editorUtils";
+import * as editorUtils from "../../../util/editorUtils";
 
 const EditorContent = ({ value, onChange,  setIsContentGuidence }) => {
   const textareaRef = useRef(null);

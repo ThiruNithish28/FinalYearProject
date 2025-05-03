@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { marked } from "marked";
-import Accordian from "./Accordian";
+import Accordian from "../Accordian";
 
 
 

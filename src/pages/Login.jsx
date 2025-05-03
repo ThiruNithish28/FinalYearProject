@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../util/firebase";
+import { useAuthContext } from "../context/AuthContext";
 
 import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -19,6 +18,8 @@ const Login = () => {
     email: "",
     password: "",
   });
+
+  const { signInWithEmail} = useAuthContext();
 
   const navigate = useNavigate();
 
@@ -40,9 +41,9 @@ const Login = () => {
 
     // if(Object.keys(newErrors).length >= 0) return;
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmail(email, password);
       toast.success("Log in SucessFull");
-      navigate("/new-chat2");
+      navigate("/new-chat");
     } catch (error) {
       toast.error(error.message);
     }

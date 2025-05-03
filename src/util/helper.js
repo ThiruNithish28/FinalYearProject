@@ -1,3 +1,15 @@
+export const formatTimeStamp = (timestamp) => {
+  if (!timestamp) return null; // Handle null or undefined timestamp
+  const date = new Date(timestamp);
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
+}
+
+
+
 export const parseResponse = (response) => {
     const regex = /```(\w+)?\n([\s\S]*?)```/g;
     let result = [];

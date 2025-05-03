@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { UseAuthContext } from "../context/AuthContext";
-import { useUserChatContext } from "../context/userChatContext";
+import { useAuthContext } from "../../context/AuthContext";
+import { useUserChatContext } from "../../context/userChatContext";
 import {
   Settings,
   EllipsisVertical,
@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 const SideNav = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [showUserOption, setShowUserOption] = useState(false);
-  const { currentUser, logOut } = UseAuthContext();
+  const { user, profile, signOut } = useAuthContext();
   const { allQuery, setActiveChatId } = useUserChatContext();
 
   const navigate = useNavigate();
@@ -53,9 +53,9 @@ const SideNav = () => {
           className="flex justify-center items-center gap-2 bg-gray-btn text-white p-4 mt-5 rounded-md cursor-pointer "
         >
           {isOpen ? <Plus /> : <PlusCircle />}
-          <spam className={`capitalize  ${isOpen ? "block" : "hidden"} `}>
+          <span className={`capitalize  ${isOpen ? "block" : "hidden"} `}>
             new chat
-          </spam>
+          </span>
         </div>
         {/* chat history */}
         {isOpen && (
@@ -81,13 +81,23 @@ const SideNav = () => {
           isOpen ? "flex justify-between" : "justify-center"
         } `}
       >
-        <div className=" flex gap-3">
-          <UserCircle2 /> {/**user icon */}
-          {isOpen && currentUser && (
+        <div className=" flex items-center gap-3">
+          {/**user icon */}
+          {profile?.avatar_url ? (
+            <img
+              src={profile?.avatar_url}
+              alt="user"
+               referrerPolicy="no-referrer"
+              className="w-8 h-8 rounded-full"
+            />
+          ) : (
+            <UserCircle2 />
+          )}
+          {isOpen && user && (
             <p className="text-[14px] font-medium">
-              {currentUser.email.length > 20
-                ? currentUser.email.slice(0, 20) + "..."
-                : currentUser.email}
+              {user.email.length > 20
+                ? user.email.slice(0, 20) + "..."
+                : user.email}
             </p>
           )}
           {/**user name */}
@@ -103,13 +113,16 @@ const SideNav = () => {
               <div className="absolute right-[-350%] top-[-400%] text-[14px] bg-gray-btn rounded-lg shadow-lg px-4 py-2 r">
                 <div
                   className="flex items-center gap-2 mb-2 text-light-gray cursor-pointer"
-                  onClick={() => logOut()}
+                  onClick={() => signOut()}
                 >
                   <LogOut size={14} />{" "}
                   {isOpen && <span className="text-sm">Logout</span>}
                 </div>
-                <div onClick={()=>navigate("/user")} className="flex items-center gap-2 text-light-gray cursor-pointer">
-                  <Settings size={14}  />{" "}
+                <div
+                  onClick={() => navigate("/user")}
+                  className="flex items-center gap-2 text-light-gray cursor-pointer"
+                >
+                  <Settings size={14} />{" "}
                   {isOpen && <span className="text-sm">Settings</span>}
                 </div>
               </div>
