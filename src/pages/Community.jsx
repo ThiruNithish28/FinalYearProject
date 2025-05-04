@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import CommunityHeader from "../components/Community/CommunityHeader";
 import CommunityNav from "../components/Community/CommunityNav";
 import CommunitySideNav from "../components/Community/CommunitySideNav";
-import { topCommunityLists, topContributors } from "../util/CommunityData";
+import { topContributors } from "../util/CommunityUtils";
 import CommunityFeed from "../components/Community/CommunityFeed";
 import { useParams } from "react-router-dom";
 import { useCommunityContext } from "../context/CommunityContext";
@@ -123,7 +123,6 @@ const Community = () => {
             createdAt={selectedCommunity?.created_at}
             members={selectedCommunity?.followers_count}
             topContributors={topContributors}
-            topCommunityLists={topCommunityLists}
           />
         </div>
       </main>

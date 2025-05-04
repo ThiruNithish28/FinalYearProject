@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import CommunityNav from "../components/Community/CommunityNav";
-import { post } from "../util/CommunityData";
+
 import {
   ArrowBigDown,
   ArrowBigUp,

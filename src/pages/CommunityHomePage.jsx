@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CommunityNav from "../components/Community/CommunityNav";
 import CommunitySideNav from "../components/Community/CommunitySideNav";
-import { topCommunityLists, topContributors } from "../util/CommunityData";
+import {  topContributors } from "../util/CommunityUtils";
 import CommunityFeed from "../components/Community/CommunityFeed";
 import { supabase } from "../util/supabaseClient";
 
@@ -40,7 +40,6 @@ const CommunityHomePage = () => {
         <CommunitySideNav
           isHomePageNav={true}
           topContributors={topContributors}
-          topCommunityLists={topCommunityLists}
         />
       </div>
     </div>

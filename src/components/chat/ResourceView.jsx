@@ -1,7 +1,7 @@
-const ResourceView = ({ youtube_Resource }) => {
+const ResourceView = ({ youtube_Resource}) => {
   return (
     <div class="lg:w-[860px] flex flex-wrap gap-2.5 p-2 justify-center">
-      {youtube_Resource.map((res) => (
+      {youtube_Resource?.map((res) => (
         <a
           id={res.id.videoId}
           href={`https://www.youtube.com/watch?v=${res.id.videoId}`}

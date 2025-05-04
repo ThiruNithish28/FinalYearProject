@@ -42,7 +42,7 @@ const PostCard = ({ post, communityName }) => {
       </div>
       <div className="pl-10">
         <div>
-          <Link to={`/${communityName}/post/${post.id}`} >
+          <Link to={`/${communityName}/post/${post.id}`}  target="_blank">
           <h2 className="font-extrabold text-3xl hover:cursor-pointer hover:text-sky-300">
             {post.title}
           </h2>

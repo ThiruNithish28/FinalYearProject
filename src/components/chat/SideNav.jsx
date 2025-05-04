@@ -11,7 +11,7 @@ import {
   PlusCircle,
   Plus,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SideNav = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -27,7 +27,7 @@ const SideNav = () => {
         isOpen ? "w-72" : "w-20"
       } p-4 hidden lg:flex flex-col justify-between items-center bg-input-dark transition-all duration-600`}
     >
-      <div>
+      <div className="h-[90%] flex flex-col">
         <nav className="flex justify-center items-center">
           <div
             className={` transition-all duration-200 ${
@@ -47,23 +47,25 @@ const SideNav = () => {
             {isOpen ? <SidebarClose /> : <SidebarOpen />}
           </button>
         </nav>
+
         {/* new chat button */}
         <div
           onClick={() => setActiveChatId(null)}
           className="flex justify-center items-center gap-2 bg-gray-btn text-white p-4 mt-5 rounded-md cursor-pointer "
         >
-          {isOpen ? <Plus /> : <PlusCircle />}
+          <Plus />
           <span className={`capitalize  ${isOpen ? "block" : "hidden"} `}>
             new chat
           </span>
         </div>
+
         {/* chat history */}
         {isOpen && (
           <div className="w-full mt-9  text-white hover:cursor-pointer">
             {allQuery?.map((chat) => (
               <div
                 key={chat.chat_id}
-                className="w-full my-2  overflow-ellipsis"
+                className="w-full overflow-ellipsis hover:bg-gray-text-30 rounded-md p-2 text-sm font-medium text-light-gray hover:text-white"
                 onClick={() => setActiveChatId(chat.chat_id)}
               >
                 {chat.title.length > 30
@@ -73,11 +75,24 @@ const SideNav = () => {
             ))}
           </div>
         )}
+
+        {/* Community button */}
+        <div className="mt-auto w-full">
+          <Link
+            to={"/community"}
+            className="flex justify-center items-center gap-2 bg-sky-700 hover:bg-sky-900 hover:cursor-pointer hover:font-bold text-white w-full p-4 mt-5 rounded-md transition-all duration-200 ease-in-out"
+          >
+            <span className={`capitalize ${isOpen ? "block" : "hidden"}`}>
+              Explore Community
+            </span>
+          </Link>
+        </div>
+
       </div>
 
       {/* user info */}
       <div
-        className={`w-full text-white  items-center ${
+        className={`w-full h-[10%] mt-5 text-white  items-center ${
           isOpen ? "flex justify-between" : "justify-center"
         } `}
       >
@@ -87,7 +102,7 @@ const SideNav = () => {
             <img
               src={profile?.avatar_url}
               alt="user"
-               referrerPolicy="no-referrer"
+              referrerPolicy="no-referrer"
               className="w-8 h-8 rounded-full"
             />
           ) : (

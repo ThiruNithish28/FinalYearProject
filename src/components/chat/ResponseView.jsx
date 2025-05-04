@@ -28,7 +28,7 @@ const ResponseView = ({ renderedResponse }) => {
   return (
     <div
       dangerouslySetInnerHTML={{ __html: renderedResponse }}
-      className="w-[100vw] h-full lg:w-[860px] lg:p-4 p-5 rounded-xl whitespace-pre-wrap prose prose-invert max-w-none [&_pre]:overflow-x-auto [&_pre]:p-4 [&_pre]:rounded-lg  [&_code]:text-sm [&_code]:block"
+      className="w-[100vw] h-full lg:w-[860px] lg:p-4 p-5 rounded-xl  prose prose-invert max-w-none [&_pre]:overflow-x-auto [&_pre]:p-4 [&_pre]:rounded-lg  [&_code]:text-sm [&_code]:block"
     ></div>
   );
 };

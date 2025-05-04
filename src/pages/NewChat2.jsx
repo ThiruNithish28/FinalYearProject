@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { CircleFadingArrowUp } from "lucide-react";
-import { geminiRun, getKeyWordExtract, getTitle } from "../util/gemini";
 
-import {supabase} from "../util/supabaseClient";
 import { useUserChatContext } from "../context/userChatContext";
 import { useAuthContext } from "../context/AuthContext";
 
 import SideNav from "../components/chat/SideNav";
 import ChatGrid from "../components/chat/ChatGrid";
 import TopNav from "../components/chat/TopNav";
+
+import { geminiRun, getKeyWordExtract, getTitle } from "../util/gemini";
 import { youtube_Search } from "../util/youtube";
+import { getCommunityPosts } from "../util/CommunityUtils";
+import { supabase } from "../util/supabaseClient";
 
 const NewChat2 = () => {
   const [currentQuery, setCurrentQuery] = useState("");
@@ -34,8 +36,18 @@ const NewChat2 = () => {
       getTitle(currentQuery, result),
       getKeyWordExtract(currentQuery, result),
     ]);
-    const resource = await youtube_Search(keyword);
-    console.log("keyword", keyword);
+
+    const [youtube_resource, communityPosts] = await Promise.all([
+      youtube_Search(keyword),
+      getCommunityPosts(keyword),
+    ]);
+    
+
+    const resources = [
+      ...youtube_resource.map((resource) => ({ type: "youtube", ...resource })),
+      ...(communityPosts || []).map((post) => ({ type: "community_post", ...post })),
+    ];
+    
 
     const newChat = {
       chat_id: Date.now(),
@@ -43,11 +55,13 @@ const NewChat2 = () => {
       title: chatTitle,
       query: currentQuery,
       response: result,
-      resources: resource,
+      resources: resources,
     };
     //save to Supabase DB
-    const {error} = await supabase.from("user_chats").insert([{...newChat,uid: user.id}]);
-    if(error) {
+    const { error } = await supabase
+      .from("user_chats")
+      .insert([{ ...newChat, user_id: user.id }]);
+    if (error) {
       console.error("Error inserting data:", error.message);
     }
 
@@ -56,11 +70,12 @@ const NewChat2 = () => {
     setCurrentQuery("");
     setActiveChatId(newChat.chat_id);
   };
-  
+
   const activeChat = allQuery.find((chat) => chat.chat_id === activeChatId); // for which chat to display
 
   return (
     <div className="flex flex-col lg:flex-row bg-[#171717] h-dvh ">
+      {console.log("resorces", activeChat?.resources)}
       {/* Sidebar for larger screens */}
       <SideNav />
       {/* Chat area */}
@@ -77,23 +92,21 @@ const NewChat2 = () => {
               <ChatGrid
                 query={activeChat.query}
                 response={activeChat.response}
-                youtube_Resource={activeChat.resources}
+                resources={activeChat.resources}
               />
-              
-              
             </div>
           ) : (
             <h2 className="text-3xl sm:text-4xl lg:text-5xl text-white font-extrabold mb-5 text-center">
               What can I help you with?
             </h2>
           )}
-          <div className="sticky bottom-3.5 w-full  lg:w-[860px]  p-2 rounded-xl flex border border-gray-border bg-gray-btn shadow-lg">
+          <div className="sticky bottom-3.5 w-full  lg:w-[860px]  p-2 rounded-xl flex border border-gray-border bg-gray-btn shadow-lg hover:border-2 hover:border-white hover:scale-105 transition-transform duration-200 ease-in-out">
             <textarea
               name="currentQuery"
               value={currentQuery}
               onChange={(e) => setCurrentQuery(e.target.value)}
               placeholder="Ask your doubt..."
-              className="p-4 w-full field-sizing-content max-h-[200px] overflow-y-auto resize-none focus:outline-none focus:ring-2 focus:ring-primary rounded-l-xl bg-gray-btn text-sm sm:text-base"
+              className="p-4 w-full field-sizing-content max-h-[200px] overflow-y-auto resize-none focus:outline-none  rounded-l-xl bg-gray-btn text-sm sm:text-base"
             ></textarea>
             <button
               className="flex items-end justify-center p-2 bg-primary hover:bg-primary-dark rounded-r-xl"
@@ -104,10 +117,8 @@ const NewChat2 = () => {
           </div>
         </div>
       </div>
-      
     </div>
   );
 };
 
 export default NewChat2;
-
