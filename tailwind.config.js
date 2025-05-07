@@ -11,7 +11,8 @@ module.exports = {
       },
     },
     plugins: [
-      require('@tailwindcss/typography'), // for prose class
+      require('@tailwindcss/typography'),
+      // for prose class
     //   require('@tailwindcss/forms'),
     //   require('@tailwindcss/aspect-ratio'),
     ],

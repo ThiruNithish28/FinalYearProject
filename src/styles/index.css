@@ -163,3 +163,33 @@ code, pre {
     box-sizing: border-box;
   }
   
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 0px; /* Minimal width to retain usability */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #555; /* Scrollbar thumb color */
+    transition: background-color 0.3s ease;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #888; /* Highlight on hover */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background-color: transparent; /* Keep track hidden */
+  }
+  
+  .visible-scrollbar::-webkit-scrollbar {
+    width: 5px; /* Wider scrollbar on hover */
+  }
+  
+  .visible-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+  }
+  
+  .visible-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa;
+  }
+  

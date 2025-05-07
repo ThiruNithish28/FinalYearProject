@@ -1,77 +1,84 @@
-import React from "react";
-import ContributerCard from "./ContributerCard";
-import { User2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+
 import { useCommunityContext } from "../../context/CommunityContext";
-import { formatTimeStamp } from "../../util/helper";
-import { CalendarClock } from "lucide-react";
+import { trendingTags } from "../../util/CommunityUtils";
+
+import ContributerCard from "./ContributerCard";
+import Accordian from "../Accordian";
+import { Link } from "react-router-dom";
+import { AlignJustifyIcon, Home, User2 } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRobot } from "@fortawesome/free-solid-svg-icons";
 
 const CommunitySideNav = ({
   isHomePageNav,
-  communityName,
-  desc,
-  createdAt,
-  members,
-  topContributors,
-  trendingTags,
+  isSideNavOpen,
+  setIsSideNavOpen,
 }) => {
   const { allCommunities } = useCommunityContext();
+  const [isNavHover, setIsNavHover] = useState(false);
   return (
-    <div
-      className={`hidden lg:block sticky top-0 z-30 ${
-        isHomePageNav ? "w-[23dvw]" : "w-[30dvw] "
-      } h-fit bg-[#171717]  text-white p-4 mt-4 rounded-sm`}
-    >
-      {isHomePageNav ? (
+    <div className="relative">
+      {/* hamburger icon */}
+      {/* close button */}
+      <div className="lg:block hidden">
+        <button
+          onClick={() => setIsSideNavOpen(!isSideNavOpen)}
+          className={`fixed top-24 z-40
+          ${isSideNavOpen ? "left-[20%]" : "left-4"}
+          w-8 h-8 flex items-center justify-center 
+          bg-[#262626] rounded-full shadow-md 
+          text-gray-300 hover:text-white transition-all duration-300 border border-gray-600`}
+        >
+          <AlignJustifyIcon size={20} />
+        </button>
+      </div>
+
+      {/* side nav */}
+      <div
+        onMouseEnter={() => setIsNavHover(true)}
+        onMouseLeave={() => setIsNavHover(false)}
+        className={`hidden lg:block fixed z-30 transition-all duration-300 ease-in-out ${
+          isSideNavOpen ? "w-[21%] " : "w-4"
+        } px-4 h-[calc(100dvh-70px)] overflow-y-scroll ${
+          isNavHover ? " visible-scrollbar " : " custom-scrollbar "
+        } bg-[#171717]  text-gray-text-80  border-r border-white/10`}
+      >
+        {/* options */}
         <div>
-          {/* top Community */}
-          <h2 className="text-lg font-bold capitalize">communities</h2>
+          <ul className="text-gray-text-80 font-semibold border-b border-gray-text-10 px-6 py-4 mb-4 ">
+            <li className="hover:bg-gray-text-10 hover:text-white hover:cursor-pointer  py-2 rounded-md ">
+              <Link to={"/community"} className="flex items-center gap-4">
+                <Home size={25} />
+                <span>Home</span>
+              </Link>
+            </li>
+
+            <li className="hover:bg-gray-text-10 hover:text-white hover:cursor-pointer py-2 rounded-md">
+              <Link to={"/new-chat"} className="flex items-center gap-4">
+                <FontAwesomeIcon icon={faRobot} size="lg" />
+                <span>AI chat</span>
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* top Community */}
+
+        <div className=" w-full max-w-[300px] border-b border-gray-text-10 px-6  mb-4">
           {allCommunities?.length > 0 && (
             <div className="mb-4">
-              {allCommunities.map((community, index) => (
-                <Link
-                  key={index}
-                  className="flex items-center gap-2 hover:bg-sky-800 hover:cursor-pointer p-2 rounded-md mb-2"
-                  to={`/community/${community.name.replace(/ /g, "-")}`}
-                >
-                  {community.dp ? (
-                    <div className="w-9 h-9 bg-gray-text-30 rounded-full overflow-hidden flex items-center justify-center">
-                      <img src={community.dp} alt="community-dp" />
-                    </div>
-                  ) : (
-                    <div className="w-9 h-9 bg-gray-text-30 rounded-full overflow-hidden flex items-center justify-center">
-                      <User2 />
-                    </div>
-                  )}
-                  <div>
-                    <h2 className="capitalize ">{community.name}</h2>
-                  </div>
-                </Link>
-              ))}
+              <Accordian
+                isCommunityList={true}
+                title="communities"
+                elements={allCommunities}
+              />
             </div>
           )}
         </div>
-      ) : (
-        <div>
-          <h2 className="text-xl font-bold mb-2">{communityName}</h2>
-          <p className="text-gray-text-40 mb-2">{desc}</p>
-          <p className="text-gray-text-40 mb-2">
-            <CalendarClock className="inline mr-1.5" size={18}/>
-            <span>
-              Created on {formatTimeStamp(createdAt)}
-            </span>
-          </p>
-          <div>
-            <p className="flex flex-col">
-              {members}
-              <span className="text-gray-text-40">members</span>
-            </p>
-          </div>
-        </div>
-      )}
-      <div>
+
         {/* {top contributer} */}
+        {/* <div>
         <h2 className="text-lg font-bold">Top Contributors</h2>
         {topContributors &&
           topContributors.map((contributer, index) => (
@@ -82,20 +89,12 @@ const CommunitySideNav = ({
               points={contributer.points}
             />
           ))}
-      </div>
-      {/* Trending tag */}
-      <div>
-        <h2 className="text-lg font-bold">Trending Tags</h2>
-        <div className="flex flex-wrap gap-2">
-          <span className="bg-gray-700 text-white px-2 py-1 rounded-md">
-            #React
-          </span>
-          <span className="bg-gray-700 text-white px-2 py-1 rounded-md">
-            #JavaScript
-          </span>
-          <span className="bg-gray-700 text-white px-2 py-1 rounded-md">
-            #CSS
-          </span>
+        </div> */}
+
+        {/* Trending tag */}
+        <div className="w-full max-w-[300px] border-b border-gray-text-10 px-6  mb-4">
+          {console.log("trending tags", trendingTags)}
+          <Accordian title="trending tags" elements={trendingTags} />
         </div>
       </div>
     </div>

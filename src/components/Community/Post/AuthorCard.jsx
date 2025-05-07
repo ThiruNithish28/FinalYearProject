@@ -1,6 +1,7 @@
 import { CalendarDays, Github, MapPin, Twitter } from "lucide-react";
 import React from "react";
 import { formatTimeStamp } from "../../../util/helper";
+import SkillPills from "../../SkillPills";
 
 const AuthorCard = ({ author }) => {
   return (
@@ -35,12 +36,7 @@ const AuthorCard = ({ author }) => {
       <div className="flex flex-wrap gap-2 mb-4">
         {author?.skills &&
           author.skills.map((skill, index) => (
-            <span
-              key={index}
-              className="px-2 py-1 bg-gray-text-10 text-sm text-gray-text-30 rounded-full"
-            >
-              {skill}
-            </span>
+            <SkillPills key={index} label={skill}/>
           ))}
       </div>
 

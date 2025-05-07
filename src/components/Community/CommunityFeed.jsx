@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import TabSwitcher from "../chat/TabSwitcher";
 import PostCard from "./Post/PostCard";
 
-const CommunityFeed = ({ isHomePage, posts ,communityName}) => {
+const CommunityFeed = ({ isHomePage,  isSideNavOpen, posts ,communityName}) => {
   const tabs = [
     { label: "All", id: "all" },
     { label: "Articles", id: "article" },
@@ -14,8 +14,8 @@ const CommunityFeed = ({ isHomePage, posts ,communityName}) => {
   return (
     <div
       className={` ${
-        isHomePage && "lg:ml-32 lg:w-[65%]"
-      } w-full h-full bg-[#000000] px-2 py-4 `}
+        isSideNavOpen ? "lg:w-[65%] lg:ml-[23%]" : isHomePage && "lg:ml-[5%] lg:w-full"
+      } w-full  bg-[#000000] px-2 py-4 transition-all duration-500`}
     >
       {!isHomePage && (
         <TabSwitcher

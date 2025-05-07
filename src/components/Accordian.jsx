@@ -1,40 +1,69 @@
-
 import React, { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { LucideYoutube } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus, Star } from "lucide-react";
+import { Link } from "react-router-dom";
 
-export default function Accordian({title,elements, icon}) {
-    const [isCollaspe, setIsCollaspe] = useState(true);
+export default function Accordian({ isCommunityList, title, elements, icon }) {
+  const [isCollapse, setIsCollaspe] = useState(false);
   return (
-    <div className="p-1">
-      <div className="w-full flex justify-between mt-2 p-1 border border-gray-border">
-        <div className="w-full flex gap-1 ">
-        {icon ==="youtube" ? <LucideYoutube/>:""}
-        <p>{title}</p>
-        </div>
+    <div>
+      <div className="w-full flex justify-between mb-2">
+        <h2 className="text-sm font-semibold text-gray-text-50 uppercase">
+          {title}
+        </h2>
 
-        <button onClick={()=> setIsCollaspe(!isCollaspe)} className="text-gray-border hover:cursor-pointer">
-           {isCollaspe? <ChevronDown /> : <ChevronUp/>}
+        <button
+          onClick={() => setIsCollaspe(!isCollapse)}
+          className="text-white hover:cursor-pointer"
+        >
+          {isCollapse ? <ChevronDown /> : <ChevronUp />}
         </button>
       </div>
-     { !isCollaspe && elements && elements.length > 0 && (
-        <div >
-          {elements.map((res) => (
-            <a
-              id={res.id.videoId}
-              href={`https://www.youtube.com/watch?v=${res.id.videoId}`}
-              target="_blank"
-              className="mt-4 block"
-            >
-              <img
-                src={res.snippet.thumbnails.medium.url}
-                alt={res.snippet.title}
-                className="w-full"
-              />
-              <p>{res.snippet.title.length > 20 ? res.snippet.title.slice(0,20) + "...": res.snippet.title }</p>
-            </a>
-          ))}
-        </div>
+      {!isCollapse && (
+        <>
+          {elements && elements.length > 0 && isCommunityList ? (
+            <ul>
+              <li className="text-gray-text-70 flex items-center space-x-2 hover:bg-gray-text-10 hover:cursor-pointer rounded-md px-2 py-1 mb-2">
+                <Plus />
+                <span>create a community</span>
+              </li>
+              {elements.map((community, index) => (
+                <Link
+                  key={index}
+                  className="flex items-center justify-between hover:bg-gray-text-10 hover:cursor-pointer rounded-md mb-2 "
+                  to={`/community/${community.name.replace(/ /g, "-")}`}
+                >
+                  <div className="flex items-center gap-2 ">
+                    {community.avatar_url ? (
+                      <div className="w-8 h-8 bg-white rounded-full overflow-hidden flex items-center justify-center">
+                        <img src={community.avatar_url} alt="community-dp" />
+                      </div>
+                    ) : (
+                      <div className="w-8 h-8 bg-gray-text-30 rounded-full overflow-hidden flex items-center justify-center">
+                        <User2 />
+                      </div>
+                    )}
+                    <div>
+                      <h2 className="capitalize text-gray-text-80 ">
+                        {community.name}
+                      </h2>
+                    </div>
+                  </div>
+                  <Star size={15} className="text-gray-text-80" />
+                </Link>
+              ))}
+            </ul>
+          ) : (
+            <ul className="text-gray-text-70" >
+              {elements?.map((element, index) => (
+                <li key={index} className="py-1 hover:bg-gray-text-10 hover:cursor-pointer rounded-md mb-1">
+                  <Link to={`/community/tags/${element}`}>
+                  #{element}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </>
       )}
     </div>
   );

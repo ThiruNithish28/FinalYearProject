@@ -26,10 +26,13 @@ const PostCard = ({ post, communityName }) => {
 
   
   return (
-    <div className="bg-[#171717] w-full  text-white p-4 rounded-md mb-4 flex flex-col gap-4">
+    <div className="bg-[#171717] w-full  text-white p-4 rounded-md mb-4 flex flex-col gap-4 hover:transform hover:scale-[1.02] transition-transform duration-200">
       <div className="flex items-center gap-2">
         {post?.public_profiles?.avatar_url ? (
-          <img src={post.public_profiles.avatar_url} alt={post.public_profiles.user_name} className="w-8 h-8 rounded-full"/>
+          <img src={post.public_profiles.avatar_url} alt={post.public_profiles.user_name} 
+          referrerPolicy="no-referrer"
+          className="w-8 h-8 rounded-full"
+          />
         ) : (
           <div className="rounded-full bg-gray-text-30 w-8 h-8 flex items-center justify-center">
             <User2 />

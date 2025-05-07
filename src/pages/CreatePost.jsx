@@ -99,7 +99,7 @@ const CreatePost = () => {
       tags.length !== originalPost?.tags.length);
 
   return (
-    <div className="bg-[#000000] relative text-gray-text-60  flex flex-col justify-center h-full ">
+    <div className="bg-[#000000] relative text-gray-text-60  flex flex-col justify-center h-[100dvh] ">
       <ToastContainer position="top-right" autoClose={3000} theme="dark" />
 
       {/* <TopNav /> */}

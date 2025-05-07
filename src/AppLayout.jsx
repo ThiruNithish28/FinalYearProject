@@ -14,6 +14,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Community from "./pages/Community";
 import { CommunityContextProvider } from "./context/CommunityContext";
 import PostDetails from "./pages/PostDetails";
+import Profile from "./pages/Profile";
 
 const AppLayout = () => {
   return (
@@ -91,6 +92,10 @@ const AppLayout = () => {
               element={<CommunityContextProvider>
                 <PostDetails/>
                 </CommunityContextProvider>}
+            />
+            <Route
+              path="/profile/:profileID"
+              element={<CommunityContextProvider><Profile/></CommunityContextProvider>}
             />
           </Routes>
         </BrowserRouter>

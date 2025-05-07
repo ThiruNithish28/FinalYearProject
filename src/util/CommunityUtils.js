@@ -30,17 +30,19 @@ const extractHastags = (keyword) => {
   return cleanWords;
 };
 
-// get communtiy posts by tags for the chat module  
+// get communtiy posts by tags for the chat module
 export const getCommunityPosts = async (keyword) => {
   const tags = extractHastags(keyword);
   if (tags.length === 0) return [];
 
   const { data, error } = await supabase
     .from("posts")
-    .select(`*,public_profiles!posts_user_id_fkey1 (
+    .select(
+      `*,public_profiles!posts_user_id_fkey1 (
                 user_name,
                 avatar_url
-              )`)
+              )`
+    )
     .overlaps("tags", tags)
     .order("created_at", { ascending: false })
     .limit(5);
@@ -57,13 +59,33 @@ export const topContributors = [
   { Dp: "", name: "joseph", points: 60 },
 ];
 
-
 export const trendingTags = [
-  "#React",
-  "#JavaScript",
-  "#CSS",
-  "#HTML",
-  "#NodeJS",
+  "guide",
+  "beginner",
+  "tips",
+  "roadmap",
+  "nodejS",
+  "javascript",
+  "python",
+];
+
+export const topTags = [
+  {
+    name: "ai",
+    tags: ["python", "machine learning", "deep learning", "cnn"],
+  },
+  {
+    name: "java",
+    tags: ["oops", "Dsa", "recursion", "tips"],
+  },
+  {
+    name: "javascript",
+    tags: ["oops", "Dsa", "eventloop", "callback"],
+  },
+  {
+    name: "react",
+    tags: ["useState", "hooks", "performance", "state management"],
+  },
 ];
 
 export const posts = [

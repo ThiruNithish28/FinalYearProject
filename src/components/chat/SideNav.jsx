@@ -8,8 +8,7 @@ import {
   SidebarClose,
   SidebarOpen,
   LogOut,
-  PlusCircle,
-  Plus,
+  MessageSquareDiff,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -53,7 +52,7 @@ const SideNav = () => {
           onClick={() => setActiveChatId(null)}
           className="flex justify-center items-center gap-2 bg-gray-btn text-white p-4 mt-5 rounded-md cursor-pointer "
         >
-          <Plus />
+          <MessageSquareDiff />
           <span className={`capitalize  ${isOpen ? "block" : "hidden"} `}>
             new chat
           </span>
@@ -77,7 +76,7 @@ const SideNav = () => {
         )}
 
         {/* Community button */}
-        <div className="mt-auto w-full">
+        {isOpen && <div className="mt-auto w-full">
           <Link
             to={"/community"}
             className="flex justify-center items-center gap-2 bg-sky-700 hover:bg-sky-900 hover:cursor-pointer hover:font-bold text-white w-full p-4 mt-5 rounded-md transition-all duration-200 ease-in-out"
@@ -86,7 +85,7 @@ const SideNav = () => {
               Explore Community
             </span>
           </Link>
-        </div>
+        </div>}
 
       </div>
 
@@ -96,7 +95,7 @@ const SideNav = () => {
           isOpen ? "flex justify-between" : "justify-center"
         } `}
       >
-        <div className=" flex items-center gap-3">
+        <div className=" flex items-center justify-center gap-3">
           {/**user icon */}
           {profile?.avatar_url ? (
             <img
@@ -110,22 +109,22 @@ const SideNav = () => {
           )}
           {isOpen && user && (
             <p className="text-[14px] font-medium">
-              {user.email.length > 20
-                ? user.email.slice(0, 20) + "..."
+              {user.email.length > 25
+                ? user.email.slice(0, 25) + "..."
                 : user.email}
             </p>
           )}
           {/**user name */}
         </div>
-        <div className="relative flex items-center gap-2 ">
+        <div className="relative flex items-center justify-center">
           <EllipsisVertical
             size={16}
             onClick={() => setShowUserOption(!showUserOption)}
             className="hover:cursor-pointer"
           />
-          <div>
+          
             {showUserOption && (
-              <div className="absolute right-[-350%] top-[-400%] text-[14px] bg-gray-btn rounded-lg shadow-lg px-4 py-2 r">
+              <div className={`absolute ${isOpen ?"right-[-350%] top-[-400%] ": " "} text-[14px] bg-gray-btn rounded-lg shadow-lg px-4 py-2 r`}>
                 <div
                   className="flex items-center gap-2 mb-2 text-light-gray cursor-pointer"
                   onClick={() => signOut()}
@@ -142,7 +141,7 @@ const SideNav = () => {
                 </div>
               </div>
             )}
-          </div>
+          
         </div>
       </div>
     </div>

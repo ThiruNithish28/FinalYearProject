@@ -17,10 +17,13 @@ import PostComments from "../components/Community/Post/PostComments";
 import AuthorCard from "../components/Community/Post/AuthorCard";
 import { supabase } from "../util/supabaseClient";
 import { formatTimeStamp } from "../util/helper";
+import CommunityDetailCard from "../components/Community/CommunityDetailCard";
 
 const PostDetails = () => {
   const { postId } = useParams();
   const [post, setPost] = useState(null);
+
+  const [isSideNavOpen, setIsSideNavOpen] = useState(false);
 
   useEffect(() => {
     if (!postId || postId === "undefined") {
@@ -49,8 +52,9 @@ const PostDetails = () => {
   return (
     <div className="bg-[#000000] text-white w-full h-[100dvh] overflow-x-hidden overflow-y-auto">
       <CommunityNav />
+      <CommunitySideNav isSideNavOpen={isSideNavOpen} setIsSideNavOpen={setIsSideNavOpen}/>
       <div className="flex flex-col mx-auto px-4 py-6 lg:flex-row lg:space-x-6">
-        <main className="bg-[#000000] w-full lg:w-3/4  lg:ml-10 shadow-md rounded-lg ">
+        <main className={`bg-[#000000] w-full ${isSideNavOpen ?"lg:w-3/5  lg:ml-[21%]" :"lg:w-3/4 lg:ml-[5%]"} shadow-md rounded-lg `}>
           {/* post heading */}
           <div className="relative rounded-lg">
             <img
@@ -141,14 +145,20 @@ const PostDetails = () => {
         </main>
 
         {/* side Nav */}
-        <aside className="w-full lg:w-1/4 mt-6 lg:mt-0 ">
+        <aside className="w-full lg:w-1/5 space-y-4 mt-6 lg:mt-0 ">
           <AuthorCard author={post?.public_profiles} />
-          <CommunitySideNav
+          {/* <CommunitySideNav
             isHomePageNav={false}
             members={post?.communities?.members_count}
             communityName={post?.communities?.name}
             desc={post?.communities?.description}
             createdAt={post?.communities?.created_at}
+          /> */}
+          <CommunityDetailCard
+           members={post?.communities?.members_count}
+           communityName={post?.communities?.name}
+           desc={post?.communities?.description}
+           createdAt={post?.communities?.created_at}
           />
         </aside>
       </div>

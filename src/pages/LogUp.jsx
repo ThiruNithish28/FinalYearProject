@@ -110,7 +110,7 @@ const LogUp = () => {
       <ToastContainer position="top-right" autoClose={5000} />
 
       {/* logup parent container */}
-      <div className="flex h-screen items-start justify-center">
+      <div className="flex h-full items-start justify-center">
         {/* logup container */}
         <div className="flex flex-col items-center justify-center text-white  w-[330px] sm:w-[384px]  ">
           <LoginInteractiveHeader />
@@ -219,7 +219,7 @@ const LogUp = () => {
             </button>
 
             <div>
-              <p className="text-light-gray w-full text-center mb-1.5">
+              <p className="text-light-gray w-full text-center mb-12">
                 Have an account?{" "}
                 <Link to="/" className="text-white underline">
                   Log In Now

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import CommunityHeader from "../components/Community/CommunityHeader";
+import HeaderCard from "../components/Community/HeaderCard";
 import CommunityNav from "../components/Community/CommunityNav";
 import CommunitySideNav from "../components/Community/CommunitySideNav";
 import { topContributors } from "../util/CommunityUtils";
@@ -11,6 +11,7 @@ import { ToastContainer } from "react-toastify";
 
 const Community = () => {
   const { communityName } = useParams();
+  const [isSideNavOpen, setIsSideNavOpen] = useState(true); // State to manage the visibility of the side navigation bar
 
   const {
     selectedCommunity,
@@ -102,27 +103,32 @@ const Community = () => {
   }
 
   return (
-    <div className="bg-[#000000] w-full h-full">
+    <div className="bg-[#000000] w-full h-[100dvh] overflow-x-hidden overflow-y-scroll">
       <ToastContainer position="top-right" autoClose={5000} />
 
       <CommunityNav />
-      <main className="px-6 py-4">
-        <CommunityHeader communityName={selectedCommunity?.name} />
+
+      <CommunitySideNav
+
+        isSideNavOpen={isSideNavOpen}
+        setIsSideNavOpen={setIsSideNavOpen}
+        topContributors={topContributors}
+      />
+
+      <main className={`w-full ${isSideNavOpen ? "lg:w-4/5 lg:ml-[21%]" : "w-full lg:ml-[5%]"} px-6 py-4 `}>
+        <HeaderCard
+          isCommunity={true}
+          communityName={selectedCommunity?.name}
+          bannerSrc={selectedCommunity?.banner_url}
+          logoSrc={selectedCommunity?.avatar_url}
+        />
         <div className="flex justify-between w-full mt-20">
-          {console.log('posts',posts)}
+          {console.log("posts", posts)}
           <CommunityFeed
             isHomePage={false}
             posts={posts}
             communityName={selectedCommunity?.name}
             isLoadingPosts={isLoadingPosts}
-          />
-          <CommunitySideNav
-            isHomePageNav={false}
-            communityName={selectedCommunity?.name}
-            desc={selectedCommunity?.description}
-            createdAt={selectedCommunity?.created_at}
-            members={selectedCommunity?.followers_count}
-            topContributors={topContributors}
           />
         </div>
       </main>

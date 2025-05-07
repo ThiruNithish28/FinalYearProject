@@ -1,7 +1,8 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useActionData, useLocation } from "react-router-dom";
 import { useCommunityContext } from "../../context/CommunityContext";
 import { toast } from "react-toastify";
+import { useAuthContext } from "../../context/AuthContext";
 
 const CommunityActionButtons = () => {
   const location = useLocation();
@@ -14,7 +15,14 @@ const CommunityActionButtons = () => {
     setUserFollowedCommunity,
   } = useCommunityContext();
 
+  const {user} = useAuthContext();
+
   const handleJoin = async () => {
+    if(!user){
+      toast.error("Please Log in first..");
+      return;
+    } 
+
     if (selectedCommunity) {
       try {
         await handleJoinCommunity(selectedCommunity.id);

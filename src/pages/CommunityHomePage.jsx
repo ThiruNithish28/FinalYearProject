@@ -6,6 +6,8 @@ import CommunityFeed from "../components/Community/CommunityFeed";
 import { supabase } from "../util/supabaseClient";
 
 const CommunityHomePage = () => {
+  const [isSideNavOpen, setIsSideNavOpen] = useState(true); // State to manage the visibility of the side navigation bar
+  
   const [allPosts, setAllPosts] = useState([]);
   useEffect(() => {
     // Simulate fetching posts from an API or database
@@ -32,15 +34,17 @@ const CommunityHomePage = () => {
   },[]);
 
   return (
-    <div className="bg-[#000000] w-full h-[100dvh] overflow-x-hidden overflow-y-auto">
+    <div className="bg-[#000000] w-full h-[100dvh] overflow-x-hidden overflow-y-auto ">
       <CommunityNav />
-      <div className="flex justify-between h-96">
+      <div className="flex h-96">
       {console.log('posts',allPosts)}
-        <CommunityFeed isHomePage={true} posts={allPosts} />
         <CommunitySideNav
           isHomePageNav={true}
+          isSideNavOpen={isSideNavOpen}
+          setIsSideNavOpen={setIsSideNavOpen}
           topContributors={topContributors}
         />
+        <CommunityFeed isHomePage={true} posts={allPosts}  isSideNavOpen={isSideNavOpen} />
       </div>
     </div>
   );
