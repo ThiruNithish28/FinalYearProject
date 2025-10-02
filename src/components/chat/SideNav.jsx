@@ -60,8 +60,8 @@ const SideNav = () => {
 
         {/* chat history */}
         {isOpen && (
-          <div className="w-full mt-9  text-white hover:cursor-pointer">
-            {allQuery?.map((chat) => (
+          <div className="w-full mt-9  text-white hover:cursor-pointer overflow-hidden hover:overflow-y-scroll">
+            {[...allQuery]?.reverse().map((chat) => (
               <div
                 key={chat.chat_id}
                 className={`w-full overflow-ellipsis hover:bg-gray-text-30 rounded-md my-1 p-2 text-sm font-medium text-light-gray hover:text-white ${chat.chat_id === activeChatId ? "bg-gray-text-30 text-white" : ""}`}
