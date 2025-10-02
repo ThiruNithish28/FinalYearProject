@@ -3,6 +3,7 @@ import { useEffect } from "react";
 const ResponseView = ({ renderedResponse }) => {
   useEffect(() => {
     const codeBlocks = document.querySelectorAll("pre"); // select all the code blocks
+    codeBlocks.className = "relative"; // set the position to relative for each code block
     codeBlocks.forEach((block) => {
       if (!block.querySelector(".copy-btn")) {
         const button = document.createElement("button"); // create a button

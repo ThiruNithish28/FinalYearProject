@@ -15,6 +15,7 @@ import { supabase } from "../util/supabaseClient";
 
 const NewChat2 = () => {
   const [currentQuery, setCurrentQuery] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { allQuery, setAllQuery, activeChatId, setActiveChatId } =
     useUserChatContext();
@@ -31,44 +32,52 @@ const NewChat2 = () => {
   const submitInput = async () => {
     if (currentQuery.trim() === "") return;
 
-    const result = await geminiRun(currentQuery);
-    const [chatTitle, keyword] = await Promise.all([
-      getTitle(currentQuery, result),
-      getKeyWordExtract(currentQuery, result),
-    ]);
+    setLoading(true); // start loading
+    try {
+      const result = await geminiRun(currentQuery);
+      const [chatTitle, keyword] = await Promise.all([
+        getTitle(currentQuery, result),
+        getKeyWordExtract(currentQuery, result),
+      ]);
 
-    const [youtube_resource, communityPosts] = await Promise.all([
-      youtube_Search(keyword),
-      getCommunityPosts(keyword),
-    ]);
-    
+      const [youtube_resource, communityPosts] = await Promise.all([
+        youtube_Search(keyword),
+        getCommunityPosts(keyword),
+      ]);
 
-    const resources = [
-      ...youtube_resource.map((resource) => ({ type: "youtube", ...resource })),
-      ...(communityPosts || []).map((post) => ({ type: "community_post", ...post })),
-    ];
-    
+      const resources = [
+        ...youtube_resource.map((resource) => ({
+          type: "youtube",
+          ...resource,
+        })),
+        ...(communityPosts || []).map((post) => ({
+          type: "community_post",
+          ...post,
+        })),
+      ];
 
-    const newChat = {
-      chat_id: Date.now(),
-      date_created: formateDate,
-      title: chatTitle,
-      query: currentQuery,
-      response: result,
-      resources: resources,
-    };
-    //save to Supabase DB
-    const { error } = await supabase
-      .from("user_chats")
-      .insert([{ ...newChat, user_id: user.id }]);
-    if (error) {
-      console.error("Error inserting data:", error.message);
+      const newChat = {
+        chat_id: Date.now(),
+        date_created: formateDate,
+        title: chatTitle,
+        query: currentQuery,
+        response: result,
+        resources: resources,
+      };
+
+      const { error } = await supabase
+        .from("user_chats")
+        .insert([{ ...newChat, user_id: user.id }]);
+      if (error) console.error("Error inserting data:", error.message);
+
+      setAllQuery((prev) => [...prev, newChat]);
+      setCurrentQuery("");
+      setActiveChatId(newChat.chat_id);
+    } catch (error) {
+      console.error("Something went wrong:", error.message);
+    } finally {
+      setLoading(false); // stop loading
     }
-
-    //save to context API
-    setAllQuery((prev) => [...prev, newChat]);
-    setCurrentQuery("");
-    setActiveChatId(newChat.chat_id);
   };
 
   const activeChat = allQuery.find((chat) => chat.chat_id === activeChatId); // for which chat to display
@@ -106,13 +115,41 @@ const NewChat2 = () => {
               value={currentQuery}
               onChange={(e) => setCurrentQuery(e.target.value)}
               placeholder="Ask your doubt..."
-              className="p-4 w-full field-sizing-content max-h-[200px] overflow-y-auto resize-none focus:outline-none  rounded-l-xl bg-gray-btn text-sm sm:text-base"
-            ></textarea>
+              className={`p-4 w-full field-sizing-content max-h-[200px] overflow-y-auto resize-none focus:outline-none rounded-l-xl bg-gray-btn text-sm sm:text-base ${
+                loading ? "opacity-60 cursor-not-allowed" : ""
+              }`}
+              disabled={loading}
+            />
+
             <button
               className="flex items-end justify-center p-2 bg-primary hover:bg-primary-dark rounded-r-xl"
               onClick={submitInput}
+              disabled={loading}
             >
-              <CircleFadingArrowUp size={30} className="text-white" />
+              {loading ? (
+                <svg
+                  className="animate-spin h-6 w-6 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8H4z"
+                  ></path>
+                </svg>
+              ) : (
+                <CircleFadingArrowUp size={30} className="text-white" />
+              )}
             </button>
           </div>
         </div>

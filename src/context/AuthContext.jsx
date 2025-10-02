@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
 
   const getSession = async () => {
     try {
-      setLoading(true);
+      setLoading(true); 
       const { data, error: sessionError } = await supabase.auth.getSession();
 
       if (sessionError) {

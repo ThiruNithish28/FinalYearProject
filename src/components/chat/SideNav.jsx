@@ -16,7 +16,7 @@ const SideNav = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [showUserOption, setShowUserOption] = useState(false);
   const { user, profile, signOut } = useAuthContext();
-  const { allQuery, setActiveChatId } = useUserChatContext();
+  const { allQuery, setActiveChatId, activeChatId } = useUserChatContext();
 
   const navigate = useNavigate();
 
@@ -64,10 +64,10 @@ const SideNav = () => {
             {allQuery?.map((chat) => (
               <div
                 key={chat.chat_id}
-                className="w-full overflow-ellipsis hover:bg-gray-text-30 rounded-md p-2 text-sm font-medium text-light-gray hover:text-white"
+                className={`w-full overflow-ellipsis hover:bg-gray-text-30 rounded-md my-1 p-2 text-sm font-medium text-light-gray hover:text-white ${chat.chat_id === activeChatId ? "bg-gray-text-30 text-white" : ""}`}
                 onClick={() => setActiveChatId(chat.chat_id)}
               >
-                {chat.title.length > 30
+                {chat.title.length >= 30
                   ? chat.title.slice(0, 30) + "..."
                   : chat.title}
               </div>
@@ -79,7 +79,7 @@ const SideNav = () => {
         {isOpen && <div className="mt-auto w-full">
           <Link
             to={"/community"}
-            className="flex justify-center items-center gap-2 bg-sky-700 hover:bg-sky-900 hover:cursor-pointer hover:font-bold text-white w-full p-4 mt-5 rounded-md transition-all duration-200 ease-in-out"
+            className="flex justify-center items-center gap-2 hover:bg-sky-700 bg-sky-900 hover:cursor-pointer hover:font-bold text-white w-full p-4 mt-5 rounded-md duration-400 transition- ease-in-out"
           >
             <span className={`capitalize ${isOpen ? "block" : "hidden"}`}>
               Explore Community
